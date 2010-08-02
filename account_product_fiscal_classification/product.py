@@ -1,26 +1,30 @@
 # -*- encoding: utf-8 -*-
-#########################################################################
-#                                                                       #
-# Copyright (C) 2009  Rapha�l Valyi                                     #
-#                                                                       #
-#This program is free software: you can redistribute it and/or modify   #
-#it under the terms of the GNU General Public License as published by   #
-#the Free Software Foundation, either version 3 of the License, or      #
-#(at your option) any later version.                                    #
-#                                                                       #
-#This program is distributed in the hope that it will be useful,        #
-#but WITHOUT ANY WARRANTY; without even the implied warranty of         #
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          #
-#GNU General Public License for more details.                           #
-#                                                                       #
-#You should have received a copy of the GNU General Public License      #
-#along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
-#########################################################################
+###############################################################################
+#
+#   account_product_fiscal_classification for OpenERP
+#   Copyright (C) 2010-TODAY Akretion <http://www.akretion.com>
+#     @author Renato Lima <renato.lima@akretion.com>
+#     @author Raphaël Valyi <rvalyi@akretion.com>
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as
+#   published by the Free Software Foundation, either version 3 of the
+#   License, or (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+###############################################################################
 
 from osv import fields, osv
 
-class product_product(osv.osv):
-    _inherit = 'product.product'
+class product_template(osv.osv):
+    _inherit = 'product.template'
+
     _columns = {
                 'property_fiscal_classification': fields.property(
                     'account.product.fiscal.classification',
@@ -47,4 +51,18 @@ class product_product(osv.osv):
             result['value']['supplier_taxes_id'] = to_keep_purchase_tax_ids + [x.id for x in fiscal_classification.purchase_base_tax_ids]
         return result
 
+product_template()
+
+class product_product(osv.osv):
+    _inherit = "product.product"
+
+    def fiscal_classification_id_change(self, cr, uid, ids, fiscal_classification_id=False, sale_tax_ids=[[6, 0, []]], purchase_tax_ids=[[6, 0, []]]):
+        """We eventually keep the sale and purchase taxes because those are not company wise in OpenERP. So if we choose a different fiscal position
+        for a different company, we don't want to override other's companies setting"""
+
+        result = self.pool.get('product.template').fiscal_classification_id_change(cr, uid, ids, fiscal_classification_id, sale_tax_ids=[[6, 0, []]], purchase_tax_ids=[[6, 0, []]])
+        return result
+
 product_product()
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
