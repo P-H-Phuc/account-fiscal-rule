@@ -20,12 +20,9 @@
 #
 ##############################################################################
 
-import logging
 
-from openerp import SUPERUSER_ID, models, fields, api, _
+from openerp import models, fields, api, _
 from openerp.exceptions import ValidationError
-
-_logger = logging.getLogger(__name__)
 
 
 class AccountProductFiscalClassification(models.Model):
@@ -36,21 +33,9 @@ class AccountProductFiscalClassification(models.Model):
     _description = 'Product Fiscal Classification'
     _MAX_LENGTH_NAME = 256
 
-    # Getter / Setter Section
+    # Default Section
     def _default_company_id(self):
         return self.env['res.users']._get_company()
-
-    def _get_product_tmpl_qty(self):
-        for rec in self:
-            rec.product_tmpl_qty = self.env['product.template'].search_count([
-                ('fiscal_classification_id', '=', rec.id), '|',
-                ('active', '=', False), ('active', '=', True)])
-
-    def _get_product_tmpl_ids(self):
-        for rec in self:
-            rec.product_tmpl_ids = self.env['product.template'].search([
-                ('fiscal_classification_id', '=', rec.id), '|',
-                ('active', '=', False), ('active', '=', True)])
 
     # Field Section
     name = fields.Char(
@@ -70,10 +55,10 @@ class AccountProductFiscalClassification(models.Model):
 
     product_tmpl_ids = fields.One2many(
         comodel_name='product.template', string='Products',
-        compute=_get_product_tmpl_ids)
+        compute='_compute_product_tmpl_info')
 
     product_tmpl_qty = fields.Integer(
-        string='Products Quantity', compute=_get_product_tmpl_qty)
+        string='Products Quantity', compute='_compute_product_tmpl_info')
 
     purchase_tax_ids = fields.Many2many(
         comodel_name='account.tax',
@@ -90,6 +75,15 @@ class AccountProductFiscalClassification(models.Model):
         string='Sale Taxes', oldname="sale_base_tax_ids", domain="""[
             ('parent_id', '=', False),
             ('type_tax_use', 'in', ['sale', 'all'])]""")
+
+    # Compute Section
+    @api.one
+    def _compute_product_tmpl_info(self):
+        res = self.env['product.template'].search([
+            ('fiscal_classification_id', '=', self.id), '|',
+            ('active', '=', False), ('active', '=', True)])
+        self.product_tmpl_ids = res
+        self.product_tmpl_qty = len(res)
 
     # Overload Section
     @api.multi
@@ -166,50 +160,3 @@ class AccountProductFiscalClassification(models.Model):
             'company_id': company_id,
             'sale_tax_ids': [(6, 0, sale_tax_ids)],
             'purchase_tax_ids': [(6, 0, purchase_tax_ids)]}).id
-
-    def init(self, cr):
-        """Generate Fiscal Classification for each combinations of Taxes set
-        in product"""
-        uid = SUPERUSER_ID
-        pt_obj = self.pool['product.template']
-        fc_obj = self.pool['account.product.fiscal.classification']
-
-        # Get all Fiscal Classification (if update process)
-        list_res = {}
-        fc_ids = fc_obj.search(
-            cr, uid, ['|', ('active', '=', False), ('active', '=', True)])
-        fc_list = fc_obj.browse(cr, uid, fc_ids)
-        for fc in fc_list:
-            list_res[fc.id] = [
-                fc.company_id and fc.company_id.id or False,
-                sorted([x.id for x in fc.sale_tax_ids]),
-                sorted([x.id for x in fc.purchase_tax_ids])]
-
-        # Get all product template without Fiscal Classification defined
-        pt_ids = pt_obj.search(cr, uid, [
-            ('fiscal_classification_id', '=', False)])
-
-        pt_list = pt_obj.browse(cr, uid, pt_ids)
-        counter = 0
-        total = len(pt_list)
-        # Associate product template to existing or new Fiscal Classification
-        for pt in pt_list:
-            counter += 1
-            args = [
-                pt.company_id and pt.company_id.id or False,
-                sorted([x.id for x in pt.taxes_id]),
-                sorted([x.id for x in pt.supplier_taxes_id])]
-            if args not in list_res.values():
-                _logger.info(
-                    """create new Fiscal Classification. Product templates"""
-                    """ managed %s/%s""" % (counter, total))
-                fc_id = self.find_or_create(cr, uid, *args)
-                list_res[fc_id] = args
-                # associate product template to the new Fiscal Classification
-                pt_obj.write(cr, uid, [pt.id], {
-                    'fiscal_classification_id': fc_id})
-            else:
-                # associate product template to existing Fiscal Classification
-                pt_obj.write(cr, uid, [pt.id], {
-                    'fiscal_classification_id': list_res.keys()[
-                        list_res.values().index(args)]})
