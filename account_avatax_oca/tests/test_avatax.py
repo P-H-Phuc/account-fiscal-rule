@@ -60,8 +60,14 @@ class TestAvatax(common.TransactionCase):
     @patch(
         "odoo.addons.account_avatax_oca.models.avalara_salestax.AvalaraSalestax.create_transaction"  # noqa: B950
     )
+    @patch(
+        "odoo.addons.account_avatax_oca.models.avalara_salestax.AvalaraSalestax.void_transaction"
+    )
     def test_avatax_compute_tax(
-        self, mock_create_transaction, mock_get_avatax_config_company
+        self,
+        mock_void_transaction,
+        mock_create_transaction,
+        mock_get_avatax_config_company,
     ):
         avatax_config = self.env["avalara.salestax"].create(
             {
@@ -120,7 +126,7 @@ class TestAvatax(common.TransactionCase):
                     "line_id": line.id,
                 }
                 for line, line_data in zip(
-                    self.invoice.invoice_line_ids, invoice_line_data
+                    self.invoice.invoice_line_ids, invoice_line_data, strict=True
                 )
             ]
         )
@@ -140,7 +146,9 @@ class TestAvatax(common.TransactionCase):
         mock_get_avatax_config_company.assert_called()
         mock_create_transaction.assert_called()
 
+        mock_void_transaction.return_value = {"status": "success"}
         self.invoice.button_draft()
+        mock_void_transaction.assert_called()
 
         avatax_config.write(
             {
@@ -171,7 +179,7 @@ class TestAvatax(common.TransactionCase):
                     "line_id": line.id,
                 }
                 for line, line_data in zip(
-                    self.invoice.invoice_line_ids, invoice_line_data
+                    self.invoice.invoice_line_ids, invoice_line_data, strict=True
                 )
             ]
         )

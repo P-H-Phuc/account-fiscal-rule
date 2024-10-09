@@ -267,17 +267,18 @@ class AccountMove(models.Model):
                 avatax_invoice=self, check_move_validity=False
             )._sync_dynamic_lines(container), self.line_ids.mapped(
                 "move_id"
-            )._check_balanced(
-                container
-            ):
+            )._check_balanced(container):
                 for line_id in taxes_to_set.keys():
-                    line = self.invoice_line_ids.filtered(lambda x: x.id == line_id)
-                    line.tax_ids.write({"tax_ids": [(6, 0, [])]})
+                    line = self.invoice_line_ids.filtered(
+                        lambda x, line_id=line_id: x.id == line_id
+                    )
+                    line.write({"tax_ids": [(6, 0, [])]})
                     line.with_context(
                         avatax_invoice=self, check_move_validity=False
                     ).write({"tax_ids": taxes_to_set.get(line_id).ids})
-            # After taxes are changed is needed to force compute taxes again, in 16 version
-            # change of tax doesn't trigger compute of taxes on header for unknown reason
+            # After taxes are changed is needed to force compute taxes again,
+            # in 16 version change of tax doesn't trigger compute of taxes
+            # on header for unknown reason
             self._compute_amount()
             if float_compare(
                 self.amount_untaxed + max(self.amount_tax, abs(self.avatax_amount)),
