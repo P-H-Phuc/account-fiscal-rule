@@ -64,7 +64,7 @@ class ResPartnerExemptionType(models.Model):
 
     @api.onchange("group_of_state")
     def onchange_group_of_state(self):
-        if self.group_of_state.state_ids and not self.state_ids:
+        if self.group_of_state and self.group_of_state.state_ids and not self.state_ids:
             self.state_ids = [(6, 0, self.group_of_state.state_ids.ids)]
 
 
@@ -160,9 +160,14 @@ class ResPartnerExemption(models.Model):
 
     @api.onchange("exemption_type", "group_of_state")
     def onchange_exemption_type(self):
-        self.business_type = self.exemption_type.business_type.id
-        if self.exemption_type.group_of_state and not self.group_of_state:
-            self.group_of_state = self.exemption_type.group_of_state.id
+        if self.exemption_type:
+            self.business_type = (
+                self.exemption_type.business_type.id
+                if self.exemption_type.business_type
+                else False
+            )
+            if self.exemption_type.group_of_state and not self.group_of_state:
+                self.group_of_state = self.exemption_type.group_of_state.id
         if self.exemption_type or self.group_of_state:
             state_ids = []
             if self.exemption_type.group_of_state.state_ids:
@@ -175,7 +180,11 @@ class ResPartnerExemption(models.Model):
 
     @api.onchange("exemption_type", "effective_date")
     def onchange_effective_date(self):
-        if self.exemption_type.exemption_validity_duration and self.effective_date:
+        if (
+            self.exemption_type
+            and self.exemption_type.exemption_validity_duration
+            and self.effective_date
+        ):
             self.expiry_date = self.effective_date + timedelta(
                 days=self.exemption_type.exemption_validity_duration
             )
