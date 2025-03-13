@@ -14,6 +14,13 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: account_avatax_oca
+#. odoo-python
+#: code:addons/account_avatax_oca/hooks.py:0
+#, python-format
+msgid "(Discount)"
+msgstr ""
+
+#. module: account_avatax_oca
 #: model:ir.model.fields.selection,name:account_avatax_oca.selection__res_partner__validation_method__avatax
 msgid "AVALARA"
 msgstr ""
