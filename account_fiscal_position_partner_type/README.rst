@@ -43,9 +43,9 @@ Configuration
 User can configure the default value according to the system company
 going to:
 
--  Settings/Users & Companies/Companies.
--  Changing the value of the "Default Partner Fiscal Position Type"
-   field.
+- Settings/Users & Companies/Companies.
+- Changing the value of the "Default Partner Fiscal Position Type"
+  field.
 
 Usage
 =====
@@ -54,8 +54,8 @@ Create a new partner and define the "Fiscal Position Type" field.
 
 Create a new Fiscal Position, with the following configuration:
 
--  'Detect Automatically' -> checked.
--  'Fiscal Position Type'
+- 'Detect Automatically' -> checked.
+- 'Fiscal Position Type'
 
 Create a new Sale/Invoice and select the partner. Remember that the
 system recalculates the fiscal position according to the shipping
@@ -82,18 +82,19 @@ Authors
 Contributors
 ------------
 
--  `Sygel <https://www.sygel.es>`__:
+- `Sygel <https://www.sygel.es>`__:
 
-      -  Harald Panten
-      -  Valentin Vinagre
+     - Harald Panten
+     - Valentin Vinagre
+     - Juan Alberto Raja Martinez
 
--  `Tecnativa <https://www.tecnativa.com>`__:
+- `Tecnativa <https://www.tecnativa.com>`__:
 
-      -  Pedro M. Baeza
+     - Pedro M. Baeza
 
--  Open Source Integrators (https://opensourceintegrators.com)
+- Open Source Integrators (https://opensourceintegrators.com)
 
-   -  Nikul Chaudhary <nchaudhary@opensourceintegrators.com>
+  - Nikul Chaudhary <nchaudhary@opensourceintegrators.com>
 
 Maintainers
 -----------
