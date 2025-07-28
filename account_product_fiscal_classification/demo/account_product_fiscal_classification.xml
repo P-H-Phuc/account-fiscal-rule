@@ -45,7 +45,10 @@
         model="account.product.fiscal.classification"
     >
         <field name="name">Demo Fiscal Classification C (Company 2)</field>
-        <field name="company_id" ref="company_2" />
+        <field
+            name="company_id"
+            ref="account_product_fiscal_classification.company_2"
+        />
         <field
             name="purchase_tax_ids"
             eval="[(6, 0, [ref('account_tax_purchase_7_company_2'), ref('account_tax_purchase_30_company_2')])]"

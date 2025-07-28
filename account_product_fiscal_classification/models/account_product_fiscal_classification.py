@@ -46,8 +46,7 @@ class AccountProductFiscalClassification(models.Model):
         column1="fiscal_classification_id",
         column2="tax_id",
         string="Purchase Taxes",
-        domain="""[
-            ('type_tax_use', 'in', ['purchase', 'all'])]""",
+        domain="[('type_tax_use', 'in', ['purchase', 'none'])]",
     )
 
     sale_tax_ids = fields.Many2many(
@@ -56,8 +55,7 @@ class AccountProductFiscalClassification(models.Model):
         column1="fiscal_classification_id",
         column2="tax_id",
         string="Sale Taxes",
-        domain="""[
-            ('type_tax_use', 'in', ['sale', 'all'])]""",
+        domain="[('type_tax_use', 'in', ['sale', 'none'])]",
     )
 
     # Compute Section
