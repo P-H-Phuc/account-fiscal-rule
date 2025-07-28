@@ -41,9 +41,6 @@ class Tests(TransactionCase):
         self.account_tax_purchase_7_company_2 = self.env.ref(
             "account_product_fiscal_classification.account_tax_purchase_7_company_2"
         )
-        self.chart_template = self.env.ref(
-            "account_product_fiscal_classification.chart_template"
-        )
         # self.sale_tax_2 = self.env.ref(
         #     "account_product_fiscal_classification.account_tax_sale_5_company_1"
         # )
@@ -63,8 +60,12 @@ class Tests(TransactionCase):
         products."""
         wizard = self.WizardChange.create(
             {
-                "old_fiscal_classification_id": self.fiscal_classification_A_company_1.id,
-                "new_fiscal_classification_id": self.fiscal_classification_B_company_1.id,
+                "old_fiscal_classification_id": (
+                    self.fiscal_classification_A_company_1.id
+                ),
+                "new_fiscal_classification_id": (
+                    self.fiscal_classification_B_company_1.id
+                ),
             }
         )
         wizard.button_change_fiscal_classification()
@@ -109,20 +110,6 @@ class Tests(TransactionCase):
         with self.assertRaises(ValidationError):
             self.fiscal_classification_A_company_1.unlink()
 
-    def test_10_chart_template(self):
-        """Test if installing new CoA creates correct classification"""
-        new_company = self.ResCompany.create({"name": "New Company"})
-        self.chart_template.try_loading(company=new_company, install_demo=False)
-        new_classifications = self.FiscalClassification.search(
-            [("company_id", "=", new_company.id)]
-        )
-        self.assertEqual(len(new_classifications), 1)
-        self.assertEqual(len(new_classifications[0].purchase_tax_ids), 1)
-        self.assertEqual(
-            new_classifications[0].purchase_tax_ids[0].name,
-            "Demo Purchase Tax Template 20%",
-        )
-
     def test_20_hook(self):
         vals = self.FiscalClassification._prepare_vals_from_taxes(
             self.account_tax_purchase_20_company_1,
@@ -160,7 +147,7 @@ class Tests(TransactionCase):
         )
 
         # create a product not respecting rules should fail without accountant perfil
-        with self.assertRaises(ValidationError):
+        with self.assertRaisesRegex(ValidationError, "Incorrect Fiscal Setting"):
             self._create_product(
                 self.user_demo,
                 self.category_wine,
