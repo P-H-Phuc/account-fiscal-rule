@@ -34,7 +34,7 @@ Classifications.
 A fiscal classification is an association of purchase and sale taxes
 that have to be set on your products.
 
-|image1|
+|product template form|
 
 This new design provides the following improvments.
 
@@ -53,7 +53,7 @@ This new design provides the following improvments.
   category "Beer and wine" can not have a sale tax 5,5%. (20% is
   mandatory)
 
-.. |image1| image:: https://raw.githubusercontent.com/OCA/account-fiscal-rule/18.0/account_product_fiscal_classification/static/description/product_template_form.png
+.. |product template form| image:: https://raw.githubusercontent.com/OCA/account-fiscal-rule/18.0/account_product_fiscal_classification/static/description/product_template_form.png
 
 **Table of contents**
 
@@ -67,7 +67,7 @@ Configuration
   Classifications".
 - Create new classification, with correct purchase and sale taxes.
 
-|image1|
+|fiscal classification form|
 
 **Note**
 
@@ -87,7 +87,7 @@ categories.
   Rules"
 - Create new rules.
 
-|image2|
+|fiscal classification rule wine|
 
 Every time a new product is created, the rules that matches the product
 setting will be checked **in the displayed order**.
@@ -95,11 +95,11 @@ setting will be checked **in the displayed order**.
 - If one rule is set to 'Allow', the next rules are ignored.
 - If one rule is set to 'Forbid', an error is raised.
 
-|image3|
+|fiscal classification rule wine warning|
 
-.. |image1| image:: https://raw.githubusercontent.com/OCA/account-fiscal-rule/18.0/account_product_fiscal_classification/static/description/fiscal_classification_form.png
-.. |image2| image:: https://raw.githubusercontent.com/OCA/account-fiscal-rule/18.0/account_product_fiscal_classification/static/description/fiscal_classification_rule__wine.png
-.. |image3| image:: https://raw.githubusercontent.com/OCA/account-fiscal-rule/18.0/account_product_fiscal_classification/static/description/fiscal_classification_rule__wine_warning.png
+.. |fiscal classification form| image:: https://raw.githubusercontent.com/OCA/account-fiscal-rule/18.0/account_product_fiscal_classification/static/description/fiscal_classification_form.png
+.. |fiscal classification rule wine| image:: https://raw.githubusercontent.com/OCA/account-fiscal-rule/18.0/account_product_fiscal_classification/static/description/fiscal_classification_rule__wine.png
+.. |fiscal classification rule wine warning| image:: https://raw.githubusercontent.com/OCA/account-fiscal-rule/18.0/account_product_fiscal_classification/static/description/fiscal_classification_rule__wine_warning.png
 
 Bug Tracker
 ===========
@@ -133,6 +133,8 @@ Contributors
      - Renato Lima <renato.lima@akretion.com>
 
 - Danimar RIBEIRO
+
+- Phan Hong Phuc <phucph@trobz.com>
 
 Maintainers
 -----------

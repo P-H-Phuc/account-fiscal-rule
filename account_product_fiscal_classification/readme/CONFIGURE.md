@@ -2,7 +2,7 @@
   Classifications".
 - Create new classification, with correct purchase and sale taxes.
 
-![](../static/description/fiscal_classification_form.png)
+![fiscal classification form](../static/description/fiscal_classification_form.png)
 
 **Note**
 
@@ -22,7 +22,7 @@ categories.
   Classification Rules"
 - Create new rules.
 
-![](../static/description/fiscal_classification_rule__wine.png)
+![fiscal classification rule wine](../static/description/fiscal_classification_rule__wine.png)
 
 Every time a new product is created, the rules that matches the product
 setting will be checked **in the displayed order**.
@@ -30,4 +30,4 @@ setting will be checked **in the displayed order**.
 - If one rule is set to 'Allow', the next rules are ignored.
 - If one rule is set to 'Forbid', an error is raised.
 
-![](../static/description/fiscal_classification_rule__wine_warning.png)
+![fiscal classification rule wine warning](../static/description/fiscal_classification_rule__wine_warning.png)
